@@ -6,6 +6,9 @@ import { Response } from 'express';
 export class TaskController {
     constructor(private readonly taskService : TaskService) {}
 
+    /*
+     * Obtention des tâches d'un utilisateur avec son userId
+     */
     @Get('/user/:userId')
     async getUserTasks(@Param('userId') userId: string, @Res() res): Promise<void> {
         const numericUserId = parseInt(userId, 10);
@@ -18,6 +21,9 @@ export class TaskController {
         res.status(HttpStatus.OK).json(tasks);
     }
 
+    /*
+     * Création d'une nouvelle tâche en fournissant ses infromations (nom, userId et priorité)
+     */
     @Post()
     async addTask(@Body() taskData: { name: string; userId: string; priority: string }, @Res() res: Response): Promise<void> {
         const { name, userId, priority } = taskData;

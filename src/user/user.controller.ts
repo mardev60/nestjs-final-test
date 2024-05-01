@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, ConflictException, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { UserService } from './user.service';
 
@@ -6,6 +6,9 @@ import { UserService } from './user.service';
 export class UserController {
     constructor(private readonly userService : UserService) {}
 
+    /*
+     * Création d'un utilisateur en fournissant l'adresse email
+     */
     @Post()
     async createUser(@Res() res: Response, @Body('email') email: string): Promise<any> {
 
@@ -15,16 +18,13 @@ export class UserController {
         }
 
         try {
-            const existingUser = await this.userService.getUser(email);
-            if (existingUser) {
-                res.status(HttpStatus.CONFLICT).send();
-            }
-
             await this.userService.addUser(email);
-
-            res.status(HttpStatus.CREATED).send();
+            return res.status(HttpStatus.CREATED).send();
         } catch (error) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
+            if (error instanceof ConflictException) {
+                return res.status(HttpStatus.CONFLICT).send();
+            }
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
         }
     }
 }
