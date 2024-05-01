@@ -1,6 +1,6 @@
 version: '3.8'
 
-name: 'postgres_nestjs-final-test'
+name: 'postgres_nestjs-final-test-makilm'
 
 services:
   postgres:

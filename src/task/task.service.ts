@@ -1,22 +1,31 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
+import { DatabaseService } from '../infrastructure/database/database.service';
 
 @Injectable()
 export class TaskService {
-    constructor() {}
+    constructor(private readonly db : DatabaseService) {}
 
-    addTask(name: string, userId: string, priority: number): Promise<void> {
-        throw new NotImplementedException();
+    async addTask(name: string, userId: number, priority: number): Promise<void> {
+        await this.db.task.create({
+            data : {
+                name : name,
+                userid : userId,
+                priority : priority
+            }
+        })
     }
 
-    getTaskByName(name: string): Promise<unknown> {
-        throw new NotImplementedException();
+    async getTaskByName(name: string): Promise<unknown> {
+        let task = await this.db.task.findFirst({where : {name : name}});
+        return task;
     }
 
-    getUserTasks(userId: string): Promise<unknown[]> {
-        throw new NotImplementedException();
+    async getUserTasks(userId: number): Promise<unknown[]> {
+        let tasks = await this.db.task.findMany({where : {userid : userId}});
+        return tasks;
     }
 
-    resetData(): Promise<void> {
-        throw new NotImplementedException();
+    async resetData(): Promise<void> {
+        await this.db.task.deleteMany()
     }
 }
