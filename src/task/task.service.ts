@@ -1,5 +1,6 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../infrastructure/database/database.service';
+import { Task } from './model/task.model';
 
 @Injectable()
 export class TaskService {
@@ -21,7 +22,7 @@ export class TaskService {
     /*
      * Obtention d'une tâche par son nom
      */
-    async getTaskByName(name: string): Promise<unknown> {
+    async getTaskByName(name: string): Promise<Task> {
         let task = await this.db.task.findFirst({where : {name : name}});
         return task;
     }
@@ -29,7 +30,7 @@ export class TaskService {
     /*
      * Obtention de la liste des tâches d'un utilisateur
      */
-    async getUserTasks(userId: number): Promise<unknown[]> {
+    async getUserTasks(userId: number): Promise<Task[]> {
         let tasks = await this.db.task.findMany({where : {userid : userId}});
         return tasks;
     }

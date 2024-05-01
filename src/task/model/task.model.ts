@@ -17,3 +17,10 @@ export class TaskCreation {
     @Type(() => Number)
     priority: number;
 }
+
+export class Task {
+    id : number;
+    name: string;
+    userid: number;
+    priority: number;
+}

@@ -1,5 +1,6 @@
-import { ConflictException, Injectable, NotImplementedException } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../infrastructure/database/database.service';
+import { User } from './model/user.model';
 
 @Injectable()
 export class UserService {
@@ -21,7 +22,7 @@ export class UserService {
     /*
      * Obtention d'un utilisateur par adresse mail
      */
-    async getUser(email: string): Promise<unknown> {
+    async getUser(email: string): Promise<User> {
         let user = await this.db.user.findFirst({
             where : {email : email}
         });
