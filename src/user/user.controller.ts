@@ -1,6 +1,7 @@
-import { Body, ConflictException, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, ConflictException, Controller, HttpStatus, Post, Res, ValidationPipe, UsePipes } from '@nestjs/common';
 import { Response } from 'express';
 import { UserService } from './user.service';
+import { UserCreation } from './model/user.model';
 
 @Controller()
 export class UserController {
@@ -10,15 +11,10 @@ export class UserController {
      * Création d'un utilisateur en fournissant l'adresse email
      */
     @Post()
-    async createUser(@Res() res: Response, @Body('email') email: string): Promise<any> {
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            res.status(HttpStatus.BAD_REQUEST).send();
-        }
-
+    @UsePipes(new ValidationPipe({ transform: true }))
+    async createUser(@Res() res: Response, @Body() user : UserCreation): Promise<any> {
         try {
-            await this.userService.addUser(email);
+            await this.userService.addUser(user.email);
             return res.status(HttpStatus.CREATED).send();
         } catch (error) {
             if (error instanceof ConflictException) {
